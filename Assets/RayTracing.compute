@@ -7,6 +7,10 @@ RWTexture2D<float4> Result;
 float4x4 _CameraToWorld;
 float4x4 _CameraInverseProjection;
 
+Texture2D<float4> _SkyboxTexture;
+SamplerState sampler_SkyboxTexture;
+static const float PI = 3.14159265f;
+
 struct Ray {
     float3 origin;
     float3 direction;
@@ -34,6 +38,43 @@ Ray CreateCameraRay(float2 uv) {
     return CreateRay(origin, direction);
 }
 
+struct RayHit {
+    float3 position;
+    float distance;
+    float3 normal;
+};
+
+RayHit CreateRayHit() {
+
+    RayHit hit;
+    hit.position = float3(0.0f, 0.0f, 0.0f);
+    hit.distance = 1.#INF;
+    hit.normal = float3(0.0f, 0.0f, 0.0f);
+    return hit;
+}
+
+void IntersectGroundPlane(Ray ray, inout RayHit bestHit) {
+
+    // Calculate distance along the ray where the ground plane is intersected
+    float t = -ray.origin.y / ray.direction.y;
+
+    if (t > 0 && t < bestHit.distance) {
+        bestHit.distance = t;
+        bestHit.distance = ray.origin + t * ray.direction;
+        bestHit.normal = float3(0.0f, 1.0f, 0.0f);
+    }
+}
+
+RayHit Trace(Ray ray) {
+    RayHit bestHit = CreateRayHit();
+    IntersectGroundPlane(ray, bestHit);
+    return bestHit;
+}
+
+
+
+
+
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
@@ -49,7 +90,9 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     // Get a ray for the UVs
     Ray ray = CreateCameraRay(uv);
 
-    // Write some colours
+    // Sample the skybox and write it
+    float theta = acos(ray.direction.y) / -PI;
+    float phi = atan2(ray.direction.x, -ray.direction.z) / -PI * 0.5f;
+    Result[id.xy] = _SkyboxTexture.SampleLevel(sampler_SkyboxTexture, float2(phi, theta), 0);
 
-    Result[id.xy] = float4(ray.direction * 0.5f + 0.5f, 1.0f);
 }

@@ -7,6 +7,10 @@ public class RayTracingMaster : MonoBehaviour
     public ComputeShader RayTracingShader;
 
     private RenderTexture _target;
+    
+    public Texture SkyboxTexture;
+
+    
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
@@ -54,6 +58,7 @@ public class RayTracingMaster : MonoBehaviour
     {
         RayTracingShader.SetMatrix("_CameraToWorld", _camera.cameraToWorldMatrix);
         RayTracingShader.SetMatrix("_CameraInverseProjection", _camera.projectionMatrix.inverse);
+        RayTracingShader.SetTexture(0, "_SkyboxTexture", SkyboxTexture);
     }
 
 }
