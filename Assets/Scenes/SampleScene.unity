@@ -312,3 +312,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RayTracingShader: {fileID: 7200000, guid: 4128fbfeaf6f4164da71d996562a30a1, type: 3}
   SkyboxTexture: {fileID: 2800000, guid: db23ee0fa83fa834b817bce65061ce11, type: 3}
+  DirectionalLight: {fileID: 705507994}
+  SphereRadius: {x: 3, y: 8}
+  SpheresMax: 100
+  SpherePlacementRadius: 100
+  _camera: {fileID: 0}
+  _lastFieldOfView: 0
+  _target: {fileID: 0}
+  _addMaterial: {fileID: 0}
+  _currentSample: 0
+  _transformsToWatch: []
